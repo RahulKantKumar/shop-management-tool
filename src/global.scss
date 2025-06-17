@@ -1,0 +1,53 @@
+// 1. Font Imports 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap');
+
+// 2. Color Variables (Light Theme)
+:root {
+  /* Core Theme */
+  --thunder: #ffffff;               // White background
+  --lightning: #ffc20f;             // Your signature yellow
+  --electric-blue: #0066cc;         // Deeper blue for contrast
+  --neon-spark: #00aaff;            // Brighter blue for accents
+  --storm-gray: #f5f5f5;            // Light gray for cards/dividers
+
+  /* Typography */
+  --text-light: #ffffff;            // For dark elements
+  --text-dark: #222222;             // Primary text on light bg
+  --font-primary: 'Manrope', -apple-system, sans-serif;
+}
+
+// 3. Base Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--thunder);
+  color: var(--text-dark);
+  font-family: var(--font-primary);
+  margin: 0; // Ensure no default margin
+  padding: 0; // Ensure no default padding
+}
+
+// 4. Utility Classes (Updated for light bg)
+.accent {
+  color: var(--lightning);          // Yellow stands out
+  background: rgba(0, 102, 204, 0.1); // Light blue tint
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.electric {
+  color: var(--electric-blue);
+  text-shadow: none;                // Remove glow for readability
+  border-bottom: 2px solid var(--neon-spark);
+}
+
+// 5. Components (Example: Cards)
+.card {
+  background: var(--storm-gray);
+  border: 1px solid var(--electric-blue);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.1);
+}

@@ -1,0 +1,57 @@
+.header {
+    background-color: #3E3E3E;
+    border-bottom: 2px solid #ffc20f;
+    width: 100%;
+    height: 80px;
+    margin: 0;
+    padding-left: 32px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-sizing: border-box; // Added
+
+    &__title {
+        color: #ffc20f;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: calc(100vw - 64px); // Prevent overflow
+    }
+
+    // Tablet (768px - 1024px)
+    @media (max-width: 1024px) {
+        height: 72px;
+        padding-left: 24px;
+        
+        &__title {
+            font-size: 28px;
+        }
+    }
+
+    // Small Tablet (600px - 768px)
+    @media (max-width: 768px) {
+        height: 64px;
+        padding-left: 16px;
+        
+        &__title {
+            font-size: 24px;
+        }
+    }
+
+    // Mobile (< 600px)
+    @media (max-width: 600px) {
+        height: 56px;
+        padding-left: 16px;
+        
+        &__title {
+            font-size: 20px;
+        }
+    }
+}
