@@ -7,13 +7,13 @@
   border-radius: 8px 8px 0 0;
 
   @media (max-width: 1024px) {
-
+    
   }
-  
+
   @media (max-width: 768px) {
 
   }
-  
+
   @media (max-width: 600px) {
 
   }
@@ -21,15 +21,40 @@
 
 .shop-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
 
   th, td {
     padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    font-size: 16px;
   }
 
+  td {
+    padding: 4px 16px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  // Right border on the last column
+  th:last-child,
+  td:last-child {
+    border-right: 1px solid #000;
+  }
+
+  // Bottom border on the last row
+  tbody tr:last-child td {
+    border-bottom: 1px solid #000;
+  }
+
+  // Rounded corners for top left and top right
   thead tr:first-child {
     th:first-child {
       border-top-left-radius: 8px;
@@ -60,7 +85,7 @@
   cursor: pointer;
   font-size: 16px;
   padding: 4px;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -72,22 +97,23 @@
 }
 
 .odd-row {
-  background-color: #403f3c; /* Matches BillingPage color scheme */
+  background-color: #403f3c;
+  /* Matches BillingPage color scheme */
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .shop-table {
     display: block;
-    
+
     thead {
       display: none;
     }
-    
+
     tbody {
       display: block;
     }
-    
+
     tr {
       display: block;
       margin-bottom: 16px;
@@ -95,7 +121,7 @@
       border-radius: 8px;
       padding: 12px;
     }
-    
+
     td {
       display: flex;
       justify-content: space-between;
@@ -103,7 +129,7 @@
       padding: 8px;
       border: none;
       text-align: right;
-      
+
       &::before {
         content: attr(data-label);
         font-weight: 600;
@@ -111,7 +137,7 @@
         text-align: left;
       }
     }
-    
+
     .action-column {
       display: flex;
       justify-content: flex-end;

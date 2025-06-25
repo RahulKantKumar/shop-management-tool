@@ -4,7 +4,7 @@
     margin-top: 80px;
     height: calc(100vh - 80px);
     width: calc(100% - 112px);
-    padding: 16px 0 0 0;
+    padding: 8px 0 0 0;
     overflow-y: auto;
     overflow-x: hidden; // Prevent horizontal scrolling
     transition: all 0.3s ease;
@@ -12,7 +12,7 @@
 
     &__title {
         color: #111;
-        height: 64px;
+        height: 56px;
         border-bottom: 2px solid #ffc20f;
         font-size: 32px;
         font-weight: 800;

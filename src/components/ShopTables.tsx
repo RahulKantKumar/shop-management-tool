@@ -1,8 +1,13 @@
 import React from "react";
 import "./ShopTables.scss";
 
-type ShopTableProps = {
-  tableColumns: { key: string; header: string; width: string }[];
+export type ShopTableProps = {
+  tableColumns: { 
+    key: string; 
+    header: string; 
+    width: string; 
+    alignment?: 'left' | 'right' | 'center' | 'justify' | 'start' | 'end';
+  }[];
 };
 
 const ShopTable: React.FC<ShopTableProps> = ({ tableColumns }) => {
@@ -12,7 +17,7 @@ const ShopTable: React.FC<ShopTableProps> = ({ tableColumns }) => {
         <thead>
           <tr>
             {tableColumns.map((col) => (
-              <th key={col.key} style={{ width: col.width }}>
+              <th key={col.key} style={{ width: col.width, textAlign: col.alignment}}>
                 {col.header}
               </th>
             ))}
@@ -20,10 +25,10 @@ const ShopTable: React.FC<ShopTableProps> = ({ tableColumns }) => {
         </thead>
         <tbody>
           {[...Array(8)].map((_, idx) => (
-            <tr key={idx} className="empty-row">
+            <tr key={idx} className="itemRow">
               {tableColumns.map((col) => (
-                <td key={col.key} data-label={col.header}>
-                  {/* Empty cell for styling and spacing */}
+                <td key={col.key} data-label={col.header} style={{textAlign: col.alignment}}>
+                  Testing the item 
                 </td>
               ))}
             </tr>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Header from "../components/Header";
 import LeftPanel from "../components/LeftPanel";
 import ShopInput from "../components/ShopInput";
-import ShopTables from "../components/ShopTables";
+import ShopTables, { type ShopTableProps } from "../components/ShopTables";
 import ShopButton from "../assets/ShopButton";
 
 const dummyProducts = [
@@ -23,16 +23,17 @@ const dummyProducts = [
 const BillingPage = () => {
   const [productInput, setProductInput] = useState("");
 
-  const tableColumns = [
-    { key: 'product', header: 'Product', width: '40%' },
-    { key: 'quantity', header: 'Qty', width: '15%' },
-    { key: 'rate', header: 'Rate', width: '20%' },
-    { key: 'total', header: 'Total', width: '25%' }
-  ]
+  const tableColumns: ShopTableProps["tableColumns"] = [
+    { key: "action", header: "", width: "05%", alignment: "center" },
+    { key: "serial", header: "SKUN", width: "10%", alignment: "left" },
+    { key: "product", header: "Product", width: "45%", alignment: "left" },
+    { key: "rate", header: "Rate", width: "10%", alignment: "right" },
+    { key: "quantity", header: "Quantity", width: "10%", alignment: "right" },
+    { key: "total", header: "Total", width: "20%", alignment: "right" },
+  ];
 
-
-  // Filter and sort products based on input
-  const filteredProducts = productInput
+  // Filter and sort index based on input
+  const filteredIndex = productInput
     ? dummyProducts
         .filter((product) =>
           product.serialNumber
@@ -46,6 +47,19 @@ const BillingPage = () => {
         }))
     : [];
 
+  // Filter and sort products based on input
+  const filteredProducts = productInput
+    ? dummyProducts
+        .filter((product) =>
+          product.productName.toLowerCase().includes(productInput.toLowerCase())
+        )
+        .sort((a, b) => a.productName.localeCompare(b.productName))
+        .map((p) => ({
+          value: p.productName,
+          label: p.productName,
+        }))
+    : [];
+
   return (
     <div>
       <Header />
@@ -53,14 +67,20 @@ const BillingPage = () => {
       <div className="billingPage">
         <div className="billingPage__title">Customer Billing</div>
         <div className="billingPage__form-grid">
-          <ShopInput
-            elementType={"input"}
-            labelText={"Customer Name"}
-          />
+          <ShopInput elementType={"input"} labelText={"Customer Name"} />
           <ShopInput
             elementType={"input"}
             labelText={"Mobile Number"}
             dataType={"number"}
+          />
+          <ShopInput
+            elementType={"dropdown"}
+            labelText={"Product Index"}
+            value={productInput}
+            onChange={(e) => setProductInput(e.target.value)}
+            dropdownOptions={filteredIndex}
+            dataType={"dropdown"}
+            disabled={false}
           />
           <ShopInput
             elementType={"dropdown"}
@@ -71,29 +91,15 @@ const BillingPage = () => {
             dataType={"dropdown"}
             disabled={false}
           />
-          <ShopInput
-            elementType={"dropdown"}
-            labelText={"Product Number"}
-            value={productInput}
-            onChange={(e) => setProductInput(e.target.value)}
-            dropdownOptions={filteredProducts}
-            dataType={"dropdown"}
-            disabled={false}
-          />
-          <ShopInput
-            elementType={"quantity"}
-            labelText={"Product Quantity"}
-          />
-          <ShopButton 
+          <ShopInput elementType={"quantity"} labelText={"Product Quantity"} />
+          <ShopButton
             text={"Add"}
             disabled={false}
-            onClick={() => alert('Added!')}
+            onClick={() => alert("Added!")}
           />
         </div>
         <div className="billingPage__table">
-          <ShopTables
-            tableColumns={tableColumns}
-          />
+          <ShopTables tableColumns={tableColumns} />
         </div>
       </div>
     </div>
