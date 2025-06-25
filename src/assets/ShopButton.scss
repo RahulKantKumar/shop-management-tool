@@ -1,0 +1,25 @@
+$base-color: #ffc20f;
+$hover-color: #d6a108;
+$disabled-color: #f2e6a3;
+$text-color: #000000;
+
+.shop-button {
+    background-color: $base-color;
+    color: $text-color;
+    width: fit-content;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 32px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover:not(.disabled) {
+        background-color: $hover-color;
+    }
+
+    &.disabled {
+        background-color: $disabled-color;
+        cursor: not-allowed;
+    }
+}

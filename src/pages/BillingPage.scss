@@ -17,8 +17,8 @@
         font-size: 32px;
         font-weight: 800;
         text-align: left;
-        margin: 0 24px 48px 24px;
-        box-sizing: border-box; // Added
+        margin: 0 24px 40px 24px;
+        box-sizing: border-box;
     }
 
     &__form-grid {
@@ -115,7 +115,11 @@
         }
     }
 
-    // Tablet (768px - 1024px)
+    &__table {
+        margin-top: 40px;
+        padding: 0 48px;
+    }
+
     @media (max-width: 1024px) {
         margin-left: 96px;
         width: calc(100% - 96px);
@@ -123,7 +127,6 @@
         margin-top: 72px;
     }
 
-    // Small Tablet (600px - 768px)
     @media (max-width: 768px) {
         margin-left: 80px;
         width: calc(100% - 80px);
@@ -131,7 +134,6 @@
         margin-top: 64px;
     }
 
-    // Mobile (< 600px)
     @media (max-width: 600px) {
         margin-left: 64px;
         width: calc(100% - 64px);

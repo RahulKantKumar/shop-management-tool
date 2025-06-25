@@ -1,0 +1,124 @@
+.shop-table-container {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow: hidden;
+  border-top: 1px solid #ffc20f;
+  border-radius: 8px 8px 0 0;
+
+  @media (max-width: 1024px) {
+
+  }
+  
+  @media (max-width: 768px) {
+
+  }
+  
+  @media (max-width: 600px) {
+
+  }
+}
+
+.shop-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  thead tr:first-child {
+    th:first-child {
+      border-top-left-radius: 8px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 8px;
+    }
+  }
+
+  th {
+    background-color: #ffc20f;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
+
+.action-column {
+  width: 50px;
+  text-align: center;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+/* Zebra striping */
+.even-row {
+  background-color: #ffffff;
+}
+
+.odd-row {
+  background-color: #403f3c; /* Matches BillingPage color scheme */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .shop-table {
+    display: block;
+    
+    thead {
+      display: none;
+    }
+    
+    tbody {
+      display: block;
+    }
+    
+    tr {
+      display: block;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border: none;
+      text-align: right;
+      
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: 16px;
+        text-align: left;
+      }
+    }
+    
+    .action-column {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+    }
+  }
+}
