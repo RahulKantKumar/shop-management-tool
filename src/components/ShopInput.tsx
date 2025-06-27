@@ -1,5 +1,5 @@
-import { useState } from "react";
-import "./ShopInput.scss";
+import { useState } from 'react';
+import './ShopInput.scss';
 
 export interface ShopInputProps {
   labelText: string;
@@ -13,6 +13,7 @@ export interface ShopInputProps {
   className?: string;
   dropdownOptions?: Array<{ value: string; label: string }>;
   disabled?: boolean;
+  maxLength?: number;
 }
 
 const ShopInput = (props: ShopInputProps) => {
@@ -25,16 +26,25 @@ const ShopInput = (props: ShopInputProps) => {
     onChange,
     dropdownOptions = [],
     disabled,
+    maxLength,
   } = props;
 
-  const [inputValue, setInputValue] = useState(props.value || "");
+  const [inputValue, setInputValue] = useState(props.value || '');
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setInputValue(e.target.value);
-    setShowDropdown(e.target.value !== "");
+    const value = e.target.value;
+    if (dataType === 'number') {
+      const numValue = Number(value);
+      if (value === '' || (!isNaN(numValue) && numValue >= 0)) {
+        setInputValue(value);
+      }
+    } else {
+      setInputValue(value);
+    }
+    setShowDropdown(e.target.value !== '');
     onChange?.(e);
   };
 
@@ -47,13 +57,13 @@ const ShopInput = (props: ShopInputProps) => {
   };
 
   switch (elementType) {
-    case "input":
+    case 'input':
       inputElement = (
-        <div className="shopInput">
-          <label className="shopInput__label">{labelText}</label>
+        <div className='shopInput'>
+          <label className='shopInput__label'>{labelText}</label>
           <input
-            className="shopInput__input"
-            type={dataType || "text"}
+            className='shopInput__input'
+            type={dataType || 'text'}
             value={inputValue}
             onChange={handleChange}
             placeholder={placeholder}
@@ -63,29 +73,30 @@ const ShopInput = (props: ShopInputProps) => {
       );
       break;
 
-    case "quantity":
+    case 'quantity':
       inputElement = (
-        <div className="shopInput">
-          <label className="shopInput__label">{labelText}</label>
+        <div className='shopInput'>
+          <label className='shopInput__label'>{labelText}</label>
           <input
-            className="shopInput__input"
-            type="number"
+            className='shopInput__input'
+            type={dataType}
             value={inputValue}
             onChange={handleChange}
             placeholder={placeholder}
             disabled={disabled}
+            maxLength={maxLength}
           />
         </div>
       );
       break;
 
-    case "dropdown":
+    case 'dropdown':
       inputElement = (
-        <div className="shopInput" style={{ position: "relative" }}>
-          <label className="shopInput__label">{labelText}</label>
+        <div className='shopInput' style={{ position: 'relative' }}>
+          <label className='shopInput__label'>{labelText}</label>
           <input
-            className="shopInput__input"
-            type="text"
+            className='shopInput__input'
+            type='text'
             value={inputValue}
             onChange={handleChange}
             placeholder={placeholder}
@@ -93,11 +104,11 @@ const ShopInput = (props: ShopInputProps) => {
           />
 
           {inputValue && dropdownOptions.length && showDropdown && (
-            <div className="dropdown-container">
+            <div className='dropdown-container'>
               {dropdownOptions.map((option) => (
                 <div
                   key={option.value}
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => handleDropdownSelect(option.value)}
                 >
                   {option.label}
@@ -111,8 +122,8 @@ const ShopInput = (props: ShopInputProps) => {
 
     default:
       inputElement = (
-        <div className="shopInput">
-          <label className="shopInput__label">Invalid Input Type</label>
+        <div className='shopInput'>
+          <label className='shopInput__label'>Invalid Input Type</label>
         </div>
       );
   }
