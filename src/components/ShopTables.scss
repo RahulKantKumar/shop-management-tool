@@ -1,10 +1,11 @@
 .shop-table-container {
   width: 100%;
   box-sizing: border-box;
+  height: 290px; // Fixed height for exactly 8 rows (48px each)
   overflow-y: auto;
-  overflow: hidden;
   border-top: 1px solid #ffc20f;
   border-radius: 8px 8px 0 0;
+  background: #fff;
 
   @media (max-width: 1024px) {
     
@@ -15,7 +16,7 @@
   }
 
   @media (max-width: 600px) {
-
+    height: 480px;
   }
 }
 
@@ -28,18 +29,23 @@
   overflow: hidden;
 
   th, td {
-    padding: 12px 16px;
+    padding: 4px 8px; // Reduce padding for smaller row height
     border-top: 1px solid #000;
     border-left: 1px solid #000;
     font-size: 16px;
+    min-height: 24px; // Set minimum row height to 24px
+    height: 32px;     // Set row height to 24px
+    box-sizing: border-box;
   }
 
   td {
-    padding: 4px 16px;
+    padding: 2px 8px;
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-height: 24px;
+    height: 32px;
   }
 
 
@@ -70,81 +76,14 @@
     font-weight: 600;
     position: sticky;
     top: 0;
-    z-index: 10;
   }
-}
-
-.action-column {
-  width: 50px;
-  text-align: center;
-}
-
-.action-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-}
-
-/* Zebra striping */
-.even-row {
-  background-color: #ffffff;
-}
-
-.odd-row {
-  background-color: #403f3c;
-  /* Matches BillingPage color scheme */
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .shop-table {
-    display: block;
-
-    thead {
-      display: none;
-    }
-
-    tbody {
-      display: block;
-    }
-
-    tr {
-      display: block;
-      margin-bottom: 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px;
-    }
-
-    td {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px;
-      border: none;
-      text-align: right;
-
-      &::before {
-        content: attr(data-label);
-        font-weight: 600;
-        margin-right: 16px;
-        text-align: left;
-      }
-    }
-
-    .action-column {
-      display: flex;
-      justify-content: flex-end;
-      width: 100%;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 8px;
-      padding-bottom: 8px;
-    }
+  .shop-table th, .shop-table td {
+    height: 60px;
+    padding: 8px;
+    font-size: 16px;
   }
 }
