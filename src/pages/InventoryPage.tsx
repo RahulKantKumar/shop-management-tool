@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import LeftPanel from '../components/LeftPanel';
 import ShopInput from '../components/ShopInput';
 import ShopTables, { type ShopTableProps } from '../components/ShopTables';
-import ShopButton from '../assets/ShopButton';
+import ShopButton from '../components/ShopButton';
 import { initialProducts, type Product } from '../data/products';
 import EditButton from '../components/EditButton';
 

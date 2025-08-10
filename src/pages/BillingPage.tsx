@@ -4,12 +4,11 @@ import Header from '../components/Header';
 import LeftPanel from '../components/LeftPanel';
 import ShopInput from '../components/ShopInput';
 import ShopTables, { type ShopTableProps } from '../components/ShopTables';
-import ShopButton from '../assets/ShopButton';
+import ShopButton from '../components/ShopButton';
 import EditButton from '../components/EditButton';
 import { initialProducts } from '../data/products';
 
 const BillingPage = () => {
-  const STORAGE_KEY = 'billingFormState';
   const tableColumns: ShopTableProps['tableColumns'] = [
     { key: 'sno', header: 'S. NO.', width: '10%', alignment: 'left' },
     { key: 'product', header: 'ITEMS', width: '40%', alignment: 'left' },
@@ -35,46 +34,6 @@ const BillingPage = () => {
   const discountValue = parseFloat(discount) || 0;
   const discountedTotal = grandTotal - (grandTotal * discountValue / 100);
 
-  // Load saved form state on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object') {
-          setCustomerName(parsed.customerName ?? '');
-          setMobileNumber(parsed.mobileNumber ?? '');
-          setIndexInput(parsed.indexInput ?? '');
-          setProductInput(parsed.productInput ?? '');
-          setProductQuantity(parsed.productQuantity ?? '');
-          setTableRowData(Array.isArray(parsed.tableRowData) ? parsed.tableRowData : []);
-          setEditingIndex(typeof parsed.editingIndex === 'number' ? parsed.editingIndex : null);
-        }
-      }
-    } catch {
-      // ignore malformed storage
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Persist state on change
-  useEffect(() => {
-    const payload = {
-      customerName,
-      mobileNumber,
-      indexInput,
-      productInput,
-      productQuantity,
-      tableRowData,
-      editingIndex,
-    };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch {
-      // ignore quota issues
-    }
-  }, [customerName, mobileNumber, indexInput, productInput, productQuantity, tableRowData, editingIndex]);
-
   const clearAll = () => {
     setCustomerName('');
     setMobileNumber('');
@@ -84,9 +43,6 @@ const BillingPage = () => {
     setTableRowData([]);
     setEditingIndex(null);
     setDiscount('');
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {}
   };
 
   const handlePrint = () => {
