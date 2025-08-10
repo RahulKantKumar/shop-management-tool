@@ -4,7 +4,6 @@
     margin-top: 80px;
     height: calc(100vh - 80px);
     width: calc(100% - 112px);
-    padding: 8px 0 0 0;
     overflow-y: auto;
     overflow-x: hidden; // Prevent horizontal scrolling
     transition: all 0.3s ease;
@@ -24,7 +23,7 @@
     &__form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 24px;
+        gap: 16px;
         padding: 0 48px; // Reduced from 48px
         box-sizing: border-box; // Added
 
@@ -116,8 +115,21 @@
     }
 
     &__table {
-        margin-top: 40px;
+        margin-top: 32px;
         padding: 0 48px;
+    }
+
+    &__summary {
+        padding: 16px 48px 8px 48px;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    &__actions {
+        padding: 8px 48px 24px 48px;
+        display: flex;
+        justify-content: flex-end;
     }
 
     @media (max-width: 1024px) {
@@ -139,5 +151,26 @@
         width: calc(100% - 64px);
         height: calc(100vh - 56px);
         margin-top: 56px;
+    }
+
+    .discount-input {
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        padding: 4px;
+        font-size: 16px;
+        transition: border-color 0.2s;
+        text-align: right;
+        outline: none;
+        background: #fff;
+
+        &:hover,
+        &:focus {
+            border-color: #ffc20f;
+            outline: none;
+        }
+
+        &:not(:focus) {
+            border-color: #ddd;
+        }
     }
 }

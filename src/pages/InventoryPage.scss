@@ -1,0 +1,104 @@
+.inventoryPage {
+  position: relative;
+  margin-left: 112px;
+  margin-top: 80px;
+  height: calc(100vh - 80px);
+  width: calc(100% - 112px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  &__title {
+    color: #111;
+    height: 56px;
+    border-bottom: 2px solid #ffc20f;
+    font-size: 32px;
+    font-weight: 800;
+    text-align: left;
+    margin: 0 24px 40px 24px;
+    box-sizing: border-box;
+  }
+
+  &__form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 0 48px;
+    box-sizing: border-box;
+
+    > *:nth-child(odd) {
+      justify-self: start;
+    }
+
+    > *:nth-child(even) {
+      justify-self: end;
+    }
+
+    .shopInput[dataType='quantity'] {
+      width: min(50%, 400px);
+      justify-self: center;
+    }
+
+    .inventoryPage__actions {
+      display: flex;
+      gap: 12px;
+      justify-self: end; // align actions cell to the right column
+    }
+  }
+
+  &__table {
+    margin-top: 40px;
+    padding: 0 48px;
+    flex: 1;
+    min-height: 0; // allow child to size and scroll
+    display: flex;
+
+    // Make the embedded table container fill the remaining vertical space
+    .shop-table-container {
+      height: 100% !important;
+      max-height: none;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-left: 96px;
+    width: calc(100% - 96px);
+    height: calc(100vh - 72px);
+    margin-top: 72px;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+    height: calc(100vh - 64px);
+    margin-top: 64px;
+    
+    &__form-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 0 16px;
+      
+      > * { 
+        justify-self: stretch; 
+      }
+      
+      .shopInput[dataType='quantity'] {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    margin-left: 64px;
+    width: calc(100% - 64px);
+    height: calc(100vh - 56px);
+    margin-top: 56px;
+  }
+}
+
+

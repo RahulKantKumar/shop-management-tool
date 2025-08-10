@@ -9,49 +9,64 @@ export type ShopTableProps = {
     alignment?: 'left' | 'right' | 'center' | 'justify' | 'start' | 'end';
   }[];
   tableData: any[];
+  fixedRowCount?: number; // if provided, pads rows to this count
+  containerHeight?: string | number; // height of scroll container
+  wrapInContainer?: boolean; // if false, renders only the table
 };
 
-const ShopTable: React.FC<ShopTableProps> = ({ tableColumns, tableData }) => {
-  // Always show exactly 8 rows, either filled with data or empty
+const ShopTable: React.FC<ShopTableProps> = ({
+  tableColumns,
+  tableData,
+  fixedRowCount = 8,
+  containerHeight,
+  wrapInContainer = true,
+}) => {
   const displayRows = [...tableData];
-  while (displayRows.length < 8) {
-    displayRows.push({});
+  if (typeof fixedRowCount === 'number') {
+    while (displayRows.length < fixedRowCount) {
+      displayRows.push({});
+    }
   }
 
-  return (
-    <div className='shop-table-container'>
-      <table className='shop-table'>
-        <thead>
-          <tr>
+  const tableElement = (
+    <table className='shop-table'>
+      <thead>
+        <tr>
+          {tableColumns.map((col) => (
+            <th
+              key={col.key}
+              className={`col-${col.key}`}
+              style={{ width: col.width, textAlign: col.alignment }}
+            >
+              {col.header}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className='shop-table-body'>
+        {displayRows.map((row, idx) => (
+          <tr key={idx} className={`itemRow ${idx >= tableData.length ? 'emptyRow' : ''}`}>
             {tableColumns.map((col) => (
-              <th
+              <td
                 key={col.key}
-                style={{ width: col.width, textAlign: col.alignment }}
+                className={`col-${col.key}`}
+                data-label={col.header}
+                style={{ textAlign: col.alignment }}
               >
-                {col.header}
-              </th>
+                {row[col.key] !== undefined ? row[col.key] : ''}
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody className='shop-table-body'>
-          {displayRows.slice(0, 8).map((row, idx) => (
-            <tr
-              key={idx}
-              className={`itemRow ${idx >= tableData.length ? 'emptyRow' : ''}`}
-            >
-              {tableColumns.map((col) => (
-                <td
-                  key={col.key}
-                  data-label={col.header}
-                  style={{ textAlign: col.alignment }}
-                >
-                  {row[col.key] !== undefined ? row[col.key] : ''}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  if (!wrapInContainer) return tableElement;
+
+  return (
+    <div className='shop-table-container' style={containerHeight ? { height: containerHeight } : undefined}>
+      {tableElement}
     </div>
   );
 };

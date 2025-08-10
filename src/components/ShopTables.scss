@@ -1,9 +1,8 @@
 .shop-table-container {
   width: 100%;
   box-sizing: border-box;
-  height: 290px; // Fixed height for exactly 8 rows (48px each)
+  max-height: 290px; // default for pages using 8 rows
   overflow-y: auto;
-  border-top: 1px solid #ffc20f;
   border-radius: 8px 8px 0 0;
   background: #fff;
 
@@ -16,7 +15,7 @@
   }
 
   @media (max-width: 600px) {
-    height: 480px;
+    max-height: 480px;
   }
 }
 
@@ -53,6 +52,12 @@
   th:last-child,
   td:last-child {
     border-right: 1px solid #000;
+  }
+
+  // Hide borders for action column
+  .col-action {
+    border-left-color: transparent;
+    border-right-color: transparent;
   }
 
   // Bottom border on the last row

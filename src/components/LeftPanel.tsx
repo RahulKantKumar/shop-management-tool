@@ -11,6 +11,10 @@ const LeftPanel = () => {
         className='leftPanel__billing'
         onClick={() => navigate('/billing')}
       ></div>
+      <div
+        className='leftPanel__billing'
+        onClick={() => navigate('/inventory')}
+      ></div>
     </div>
   );
 };
