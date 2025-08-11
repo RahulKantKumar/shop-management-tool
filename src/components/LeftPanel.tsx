@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './LeftPanel.scss';
 
 const iconColor = '#E0E6ED'; // lighter gray for better contrast
+const iconActive = '#ffc20f'; // yellow for active/hover
 const iconSize = 32;
 
 const HomeIcon = ({ color }: { color: string }) => (
@@ -93,25 +94,26 @@ const InventoryIcon = ({ color }: { color: string }) => (
 
 const LeftPanel = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className='leftPanel'>
       <div
-        className='leftPanel__home leftPanel__item'
+        className={`leftPanel__home leftPanel__item${location.pathname === '/' ? ' active' : ''}`}
         onClick={() => navigate('/')}
       >
         <HomeIcon color={iconColor} />
         <span className='leftPanel__label'>Home</span>
       </div>
       <div
-        className='leftPanel__billing leftPanel__item'
+        className={`leftPanel__billing leftPanel__item${location.pathname === '/billing' ? ' active' : ''}`}
         onClick={() => navigate('/billing')}
       >
         <BillingIcon color={iconColor} />
         <span className='leftPanel__label'>Billing</span>
       </div>
       <div
-        className='leftPanel__inventory leftPanel__item'
+        className={`leftPanel__inventory leftPanel__item${location.pathname === '/inventory' ? ' active' : ''}`}
         onClick={() => navigate('/inventory')}
       >
         <InventoryIcon color={iconColor} />

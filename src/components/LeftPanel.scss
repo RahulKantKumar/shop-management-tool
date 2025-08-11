@@ -56,7 +56,6 @@ $icon-active: #ffc20f;
     align-items: center;
     display: flex;
     cursor: pointer;
-    margin-bottom: 32px;
     border-radius: 8px;
     transition: color 0.2s;
     justify-content: center;
@@ -79,6 +78,15 @@ $icon-active: #ffc20f;
     &__inventory:hover .leftPanel__label {
       color: #ffc20f;
     }
+
+  &__item.active {
+    svg, path, rect, circle, line {
+      stroke: #ffc20f !important;
+    }
+    .leftPanel__label {
+      color: #ffc20f !important;
+    }
+  }
 
   // Tablet (768px - 1024px)
   @media (max-width: 1024px) {
