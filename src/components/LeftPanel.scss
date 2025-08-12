@@ -1,8 +1,10 @@
-$icon-color: #E0E6ED;
-$icon-active: #ffc20f;
+// Use CSS variables for theme consistency, with sensible fallbacks
+$panel-bg: #3E3E3E;
+$icon-default: #E0E6ED; // light gray on dark bg (meets contrast)
+$accent: var(--lightning, #ffc20f);
 
 .leftPanel {
-  background-color: #3E3E3E;
+  background-color: $panel-bg;
   width: 112px;
   height: calc(100vh - 80px);
   position: fixed;
@@ -14,77 +16,67 @@ $icon-active: #ffc20f;
   padding: 0 24px;
   box-sizing: border-box;
 
-  &__home,
-  &__billing,
-  &__inventory {
-    height: 64px;
-    width: 64px;
-    margin-top: 32px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: color 0.2s ease;
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    
-    svg {
-      width: 32px;
-      height: 32px;
-      stroke: $icon-color;
-      fill: none;
-      transition: stroke 0.2s, fill 0.2s;
-    }
-    path, rect, circle, line {
-      stroke: $icon-color;
-      fill: none;
-      transition: stroke 0.2s, fill 0.2s;
-    }
-    &:hover svg,
-    &:hover path,
-    &:hover rect,
-    &:hover circle,
-    &:hover line {
-      stroke: $icon-active;
-      fill: none;
-    }
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
   }
 
   &__item {
-    background: transparent;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__link {
+    height: 64px; // Provides at least 44x44px target size
+    width: 64px;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    display: flex;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: color 0.2s;
     justify-content: center;
+    gap: 6px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: $icon-default; // drives icon via currentColor
+    outline: none;
+    background: transparent;
+    transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 
-    &:last-child {
-      margin-bottom: 0;
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    &:hover {
+      color: $accent;
+      background-color: rgba(255, 194, 15, 0.1);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px rgba(255, 194, 15, 0.45);
+    }
+
+    &.active {
+      color: $accent;
     }
   }
-  &__label {
-      color: #E0E6ED;
-      font-size: 12px;
-      margin-top: 6px;
-      letter-spacing: 1px;
-      font-weight: 600;
-      user-select: none;
-      transition: color 0.2s;
-    }
-    &__home:hover .leftPanel__label,
-    &__billing:hover .leftPanel__label,
-    &__inventory:hover .leftPanel__label {
-      color: #ffc20f;
-    }
 
-  &__item.active {
-    svg, path, rect, circle, line {
-      stroke: #ffc20f !important;
-    }
-    .leftPanel__label {
-      color: #ffc20f !important;
+  &__label {
+    color: currentColor;
+    font-size: 13px; // Slightly larger for readability
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    user-select: none;
+    line-height: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__link {
+      transition: none;
     }
   }
 
@@ -95,16 +87,9 @@ $icon-active: #ffc20f;
     height: calc(100vh - 72px);
     top: 72px;
 
-    &__home,
-    &__billing,
-    &__inventory {
+    &__link {
       height: 56px;
       width: 56px;
-      margin-top: 24px;
-    }
-
-    &__item {
-      margin-bottom: 24px;
     }
   }
 
@@ -115,16 +100,10 @@ $icon-active: #ffc20f;
     height: calc(100vh - 64px);
     top: 64px;
 
-    &__home,
-    &__billing,
-    &__inventory {
+    &__link {
       height: 48px;
       width: 48px;
-      margin-top: 16px;
-    }
-
-    &__item {
-      margin-bottom: 16px;
+      border-radius: 8px;
     }
   }
 
@@ -135,17 +114,10 @@ $icon-active: #ffc20f;
     height: calc(100vh - 56px);
     top: 56px;
 
-    &__home,
-    &__billing,
-    &__inventory {
-      height: 40px;
-      width: 40px;
-      margin-top: 16px;
-      border-radius: 4px;
-    }
-
-    &__item {
-      margin-bottom: 16px;
+    &__link {
+      height: 44px; // meets minimum touch target
+      width: 44px;
+      border-radius: 8px;
     }
   }
 }

@@ -1,21 +1,21 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './LeftPanel.scss';
 
-const iconColor = '#E0E6ED'; // lighter gray for better contrast
-const iconActive = '#ffc20f'; // yellow for active/hover
-const iconSize = 32;
+const ICON_SIZE = 32;
 
-const HomeIcon = ({ color }: { color: string }) => (
+const HomeIcon = () => (
   <svg
-    width={iconSize}
-    height={iconSize}
+    width={ICON_SIZE}
+    height={ICON_SIZE}
     viewBox='0 0 24 24'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
+    aria-hidden='true'
+    focusable='false'
   >
     <path
       d='M3 11.5L12 4L21 11.5'
-      stroke={color}
+      stroke='currentColor'
       strokeWidth='2'
       strokeLinecap='round'
       strokeLinejoin='round'
@@ -26,100 +26,80 @@ const HomeIcon = ({ color }: { color: string }) => (
       width='11'
       height='7.5'
       rx='2'
-      stroke={color}
+      stroke='currentColor'
       strokeWidth='2'
     />
   </svg>
 );
 
-const BillingIcon = ({ color }: { color: string }) => (
+const BillingIcon = () => (
   <svg
-    width={iconSize}
-    height={iconSize}
+    width={ICON_SIZE}
+    height={ICON_SIZE}
     viewBox='0 0 24 24'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
+    aria-hidden='true'
+    focusable='false'
   >
-    <rect
-      x='4'
-      y='4'
-      width='16'
-      height='16'
-      rx='3'
-      stroke={color}
-      strokeWidth='2'
-    />
-    <path
-      d='M8 8H16M8 12H16M8 16H12'
-      stroke={color}
-      strokeWidth='2'
-      strokeLinecap='round'
-    />
+    <rect x='4' y='4' width='16' height='16' rx='3' stroke='currentColor' strokeWidth='2' />
+    <path d='M8 8H16M8 12H16M8 16H12' stroke='currentColor' strokeWidth='2' strokeLinecap='round' />
   </svg>
 );
 
-const InventoryIcon = ({ color }: { color: string }) => (
+const InventoryIcon = () => (
   <svg
-    width={iconSize}
-    height={iconSize}
+    width={ICON_SIZE}
+    height={ICON_SIZE}
     viewBox='0 0 24 24'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
+    aria-hidden='true'
+    focusable='false'
   >
-    <rect
-      x='3'
-      y='7'
-      width='18'
-      height='13'
-      rx='2'
-      stroke={color}
-      strokeWidth='2'
-    />
-    <path
-      d='M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2'
-      stroke={color}
-      strokeWidth='2'
-    />
-    <rect
-      x='9'
-      y='12'
-      width='6'
-      height='4'
-      rx='1'
-      stroke={color}
-      strokeWidth='2'
-    />
+    {/* Single large isometric parcel box with solid faces */}
+    <polygon points='12,3 20,7 12,11 4,7' fill='currentColor' fillOpacity='1' />
+    <polygon points='4,7 12,11 12,21 4,17' fill='currentColor' fillOpacity='0.35' />
+    <polygon points='20,7 12,11 12,21 20,17' fill='currentColor' fillOpacity='0.65' />
   </svg>
 );
 
 const LeftPanel = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   return (
-    <div className='leftPanel'>
-      <div
-        className={`leftPanel__home leftPanel__item${location.pathname === '/' ? ' active' : ''}`}
-        onClick={() => navigate('/')}
-      >
-        <HomeIcon color={iconColor} />
-        <span className='leftPanel__label'>Home</span>
-      </div>
-      <div
-        className={`leftPanel__billing leftPanel__item${location.pathname === '/billing' ? ' active' : ''}`}
-        onClick={() => navigate('/billing')}
-      >
-        <BillingIcon color={iconColor} />
-        <span className='leftPanel__label'>Billing</span>
-      </div>
-      <div
-        className={`leftPanel__inventory leftPanel__item${location.pathname === '/inventory' ? ' active' : ''}`}
-        onClick={() => navigate('/inventory')}
-      >
-        <InventoryIcon color={iconColor} />
-        <span className='leftPanel__label'>Inventory</span>
-      </div>
-    </div>
+    <nav className='leftPanel' aria-label='Primary'>
+      <ul className='leftPanel__list' role='list'>
+        <li className='leftPanel__item'>
+          <NavLink
+            to='/'
+            className={({ isActive }) => `leftPanel__link${isActive ? ' active' : ''}`}
+            title='Home'
+          >
+            <HomeIcon />
+            <span className='leftPanel__label'>Home</span>
+          </NavLink>
+        </li>
+        <li className='leftPanel__item'>
+          <NavLink
+            to='/billing'
+            className={({ isActive }) => `leftPanel__link${isActive ? ' active' : ''}`}
+            title='Billing'
+          >
+            <BillingIcon />
+            <span className='leftPanel__label'>Billing</span>
+          </NavLink>
+        </li>
+        <li className='leftPanel__item'>
+          <NavLink
+            to='/inventory'
+            className={({ isActive }) => `leftPanel__link${isActive ? ' active' : ''}`}
+            title='Inventory'
+          >
+            <InventoryIcon />
+            <span className='leftPanel__label'>Inventory</span>
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
   );
 };
 
