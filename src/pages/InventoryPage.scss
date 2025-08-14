@@ -61,8 +61,46 @@
       height: 100% !important;
       max-height: none;
       width: 100%;
+      /* Thin scrollbar: 4px width */
+      /* Firefox: 2px is the minimum visual width for many platforms; 'thin' approximates it */
+
+    }
+
+    /* WebKit-based browsers (Chromium, Safari, Edge) */
+    .shop-table-container::-webkit-scrollbar {
+      width: 2px;
+      height: 2px;
+    }
+    .shop-table-container::-webkit-scrollbar-thumb {
+      background: #c7c7c7;
+      border-radius: 6px;
+    }
+    .shop-table-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    // Skeleton table while loading
+    .inventoryPage__table-skeleton {
+      width: 100%;
+      .skeleton-line {
+        position: relative;
+        height: 12px;
+        border-radius: 6px;
+        overflow: hidden;
+        background: linear-gradient(90deg, #f1f1f1 25%, #e7e7e7 37%, #f1f1f1 63%);
+        background-size: 400% 100%;
+        animation: inventoryPage_skeleton 1.2s ease-in-out infinite;
+      }
+      td .skeleton-line[data-size='serial'] { width: 60%; height: 10px; }
+      td .skeleton-line[data-size='product'] { width: 80%; height: 12px; }
+      td .skeleton-line[data-size='rate'] { width: 40%; height: 10px; }
+      td .skeleton-line[data-size='billingRate'] { width: 40%; height: 10px; }
+      td .skeleton-line[data-size='quantity'] { width: 30%; height: 10px; }
+      td .skeleton-line[data-size='action'] { width: 24px; height: 24px; border-radius: 4px; }
     }
   }
+
+  &__loader-text { font-size: 14px; }
 
   @media (max-width: 1024px) {
     margin-left: 96px;
@@ -100,5 +138,7 @@
     margin-top: 56px;
   }
 }
+
+@keyframes inventoryPage_skeleton { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
 
 

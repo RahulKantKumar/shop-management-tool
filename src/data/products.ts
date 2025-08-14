@@ -4,6 +4,8 @@ export type Product = {
   quantity: number;
   rate: number; // Inventory rate
   billingRate: number; // Billing rate
+  // Optional backend identifier when synced with server
+  id?: string | number;
 };
 
 export const initialProducts: Product[] = [
