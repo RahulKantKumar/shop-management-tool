@@ -1,0 +1,200 @@
+[
+  {
+    "_id": "SN-7001",
+    "name": "Impact Driver 18V",
+    "category": "Tools",
+    "stock": 30,
+    "inventoryRate": 85.0,
+    "billingRate": 109.0,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7002",
+    "name": "Hammer Drill 18V",
+    "category": "Tools",
+    "stock": 25,
+    "inventoryRate": 95.0,
+    "billingRate": 129.0,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7003",
+    "name": "Rotary Hammer SDS-Plus",
+    "category": "Tools",
+    "stock": 15,
+    "inventoryRate": 140.0,
+    "billingRate": 179.0,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7101",
+    "name": "LED Shop Light 4ft",
+    "category": "Lighting",
+    "stock": 50,
+    "inventoryRate": 22.0,
+    "billingRate": 34.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7102",
+    "name": "Extension Cord 25ft",
+    "category": "Accessories",
+    "stock": 60,
+    "inventoryRate": 9.5,
+    "billingRate": 14.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7103",
+    "name": "Nitrile Safety Gloves (M)",
+    "category": "Safety",
+    "stock": 200,
+    "inventoryRate": 1.2,
+    "billingRate": 2.49,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7201",
+    "name": "Voltage Tester Pen",
+    "category": "Electrical",
+    "stock": 80,
+    "inventoryRate": 8.0,
+    "billingRate": 12.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7202",
+    "name": "Digital Multimeter",
+    "category": "Electrical",
+    "stock": 40,
+    "inventoryRate": 22.0,
+    "billingRate": 34.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7301",
+    "name": "Angle Grinder 4-1/2 in.",
+    "category": "Tools",
+    "stock": 35,
+    "inventoryRate": 39.0,
+    "billingRate": 54.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7302",
+    "name": "Circular Saw 7-1/4 in.",
+    "category": "Tools",
+    "stock": 20,
+    "inventoryRate": 78.0,
+    "billingRate": 109.0,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7401",
+    "name": "Lithium-Ion Battery 4Ah",
+    "category": "Accessories",
+    "stock": 45,
+    "inventoryRate": 32.0,
+    "billingRate": 49.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7402",
+    "name": "Rapid Battery Charger",
+    "category": "Accessories",
+    "stock": 40,
+    "inventoryRate": 36.0,
+    "billingRate": 54.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7501",
+    "name": "Cordless Screwdriver 12V",
+    "category": "Tools",
+    "stock": 40,
+    "inventoryRate": 28.0,
+    "billingRate": 39.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7502",
+    "name": "Heat Gun 1800W",
+    "category": "Tools",
+    "stock": 18,
+    "inventoryRate": 32.0,
+    "billingRate": 49.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7503",
+    "name": "Rechargeable Worklight 2000 lm",
+    "category": "Lighting",
+    "stock": 26,
+    "inventoryRate": 24.0,
+    "billingRate": 39.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7504",
+    "name": "Cable Ties 12in (100-pack)",
+    "category": "Accessories",
+    "stock": 120,
+    "inventoryRate": 3.0,
+    "billingRate": 6.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7505",
+    "name": "Safety Glasses Anti-Fog",
+    "category": "Safety",
+    "stock": 90,
+    "inventoryRate": 4.5,
+    "billingRate": 8.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7506",
+    "name": "Soldering Iron Kit 60W",
+    "category": "Electrical",
+    "stock": 22,
+    "inventoryRate": 12.0,
+    "billingRate": 21.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7507",
+    "name": "Wire Stripper 10–22 AWG",
+    "category": "Electrical",
+    "stock": 35,
+    "inventoryRate": 7.5,
+    "billingRate": 13.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7508",
+    "name": "PVC Electrical Tape (10-pack)",
+    "category": "Electrical",
+    "stock": 70,
+    "inventoryRate": 5.5,
+    "billingRate": 9.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7509",
+    "name": "Drill Bit Set 21-Piece",
+    "category": "Tools",
+    "stock": 28,
+    "inventoryRate": 15.0,
+    "billingRate": 29.99,
+    "isActive": true
+  },
+  {
+    "_id": "SN-7510",
+    "name": "Shop Vacuum 5-Gal 3.5 HP",
+    "category": "Tools",
+    "stock": 12,
+    "inventoryRate": 62.0,
+    "billingRate": 89.99,
+    "isActive": true
+  }
+]

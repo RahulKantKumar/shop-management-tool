@@ -13,6 +13,7 @@ export interface ShopInputProps {
   dropdownOptions?: Array<{ value: string; label: string }>;
   disabled?: boolean;
   maxLength?: number;
+  onDropdownSelect?: (selectedValue: string) => void;
 }
 
 const ShopInput = (props: ShopInputProps) => {
@@ -75,6 +76,8 @@ const ShopInput = (props: ShopInputProps) => {
       onChange(syntheticEvent);
     }
     setShowDropdown(false);
+    // Call parent handler if provided
+    props.onDropdownSelect?.(selectedValue);
   };
 
   let inputElement = null;

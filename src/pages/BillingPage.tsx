@@ -1,12 +1,15 @@
 import './BillingPage.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Header from '../components/Header';
 import LeftPanel from '../components/LeftPanel';
 import ShopInput from '../components/ShopInput';
 import ShopTables, { type ShopTableProps } from '../components/ShopTables';
 import ShopButton from '../components/ShopButton';
 import EditButton from '../components/EditButton';
-import { initialProducts } from '../data/products';
+import { getProducts } from '../api/products';
+import type { Product } from '../data/products';
+
+const API_BASE_URL = 'http://localhost:3000';
 
 const BillingPage = () => {
   const tableColumns: ShopTableProps['tableColumns'] = [
@@ -18,8 +21,30 @@ const BillingPage = () => {
     { key: 'action', header: '', width: '05%', alignment: 'center' },
   ];
 
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const serverProducts = await getProducts();
+        const mapped: Product[] = serverProducts.map((sp: any) => ({
+          id: String(sp._id ?? sp.id ?? ''),
+          productName: sp.name ?? '',
+          rate: typeof sp.billingRate === 'number' ? sp.billingRate : 0,
+          billingRate: typeof sp.billingRate === 'number' ? sp.billingRate : 0,
+          quantity: typeof sp.stock === 'number' ? sp.stock : 0,
+          category: sp.category ?? 'General',
+          isActive: sp.isActive ?? true,
+        })).filter(p => p.id && p.productName);
+        setProducts(mapped);
+      } catch (err) {
+        setProducts([]);
+      }
+    };
+    void loadProducts();
+  }, []);
+
   const [productInput, setProductInput] = useState('');
-  const [indexInput, setIndexInput] = useState('');
+  const [idInput, setIdInput] = useState('');
   const [productQuantity, setProductQuantity] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
@@ -27,6 +52,8 @@ const BillingPage = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showClearButton, setShowClearButton] = useState(false);
   const [discount, setDiscount] = useState('');
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const debounceTimeout = useRef<number | null>(null);
   const grandTotal = tableRowData.reduce(
     (sum, row) => sum + (typeof row.total === 'number' ? row.total : 0),
     0
@@ -37,7 +64,7 @@ const BillingPage = () => {
   const clearAll = () => {
     setCustomerName('');
     setMobileNumber('');
-    setIndexInput('');
+    setIdInput('');
     setProductInput('');
     setProductQuantity('');
     setTableRowData([]);
@@ -50,62 +77,105 @@ const BillingPage = () => {
     setShowClearButton(true);
   };
 
-  // Filter and sort index based on input
-  const filteredIndex = indexInput
-    ? initialProducts
-        .filter((product) =>
-          product.serialNumber.toLowerCase().includes(indexInput.toLowerCase())
-        )
-        .sort((a, b) => a.serialNumber.localeCompare(b.serialNumber))
-        .map((p) => ({
-          value: p.serialNumber,
-          label: p.serialNumber,
-        }))
-    : [];
-
-  const filteredProducts = productInput
-    ? initialProducts
-        .filter((product) =>
-          product.productName.toLowerCase().includes(productInput.toLowerCase())
-        )
-        .sort((a, b) => a.productName.localeCompare(b.productName))
-        .map((p) => ({
-          value: p.productName,
-          label: p.productName,
-        }))
-    : [];
-
-  const handleIndexInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setIndexInput(value);
-
-    // Find product by serial number and set the other i.e. product name
-    const found = initialProducts.find(
-      (product) => product.serialNumber.toLowerCase() === value.toLowerCase()
-    );
-    setProductInput(found ? found.productName : '');
-    if (found) {
-      setProductQuantity('1');
-    }
-  };
-
   const handleProductInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setProductInput(value);
+    setIdInput('');
 
-    // Find product by name and set the other i.e. serial number
-    const found = initialProducts.find(
-      (product) => product.productName.toLowerCase() === value.toLowerCase()
-    );
-    setIndexInput(found ? found.serialNumber : '');
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    if (value.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    debounceTimeout.current = window.setTimeout(() => {
+      fetch(`${API_BASE_URL}/api/products/search?q=${encodeURIComponent(value)}`)
+        .then((response) => response.ok ? response.json() : [])
+        .then((results) => {
+          const mapped: Product[] = Array.isArray(results)
+            ? results.map((d: any) => ({
+                id: String(d.id ?? d._id ?? ''),
+                productName: d.name ?? '',
+                rate: typeof d.billingRate === 'number' ? d.billingRate : 0,
+                billingRate: typeof d.billingRate === 'number' ? d.billingRate : 0,
+                quantity: typeof d.stock === 'number' ? d.stock : 0,
+                category: d.category ?? 'General',
+                isActive: d.isActive ?? true,
+              })).filter(p => p.id && p.productName)
+            : [];
+          setSearchResults(mapped);
+        })
+        .catch(() => setSearchResults([]));
+    }, 300);
+  };
+
+  const handleProductDropdownSelect = (selectedName: string) => {
+    setProductInput(selectedName);
+    const found = searchResults.find(p => p.productName === selectedName);
     if (found) {
+      setIdInput(found.id);
       setProductQuantity('1');
     }
   };
 
+  const handleIdInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setIdInput(value);
+    setProductInput('');
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    if (value.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    debounceTimeout.current = window.setTimeout(() => {
+      fetch(`${API_BASE_URL}/api/products/search?q=${encodeURIComponent(value)}`)
+        .then((response) => response.ok ? response.json() : [])
+        .then((results) => {
+          const mapped: Product[] = Array.isArray(results)
+            ? results.map((d: any) => ({
+                id: String(d.id ?? d._id ?? ''),
+                productName: d.name ?? '',
+                rate: typeof d.billingRate === 'number' ? d.billingRate : 0,
+                billingRate: typeof d.billingRate === 'number' ? d.billingRate : 0,
+                quantity: typeof d.stock === 'number' ? d.stock : 0,
+                category: d.category ?? 'General',
+                isActive: d.isActive ?? true,
+              })).filter(p => p.id && p.productName)
+            : [];
+          setSearchResults(mapped);
+        })
+        .catch(() => setSearchResults([]));
+    }, 300);
+  };
+
+  const handleIdDropdownSelect = (selectedId: string) => {
+    setIdInput(selectedId);
+    const found = searchResults.find(p => p.id === selectedId);
+    if (found) {
+      setProductInput(found.productName);
+      setProductQuantity('1');
+    }
+  };
+
+  const filteredProducts = productInput.length >= 3
+    ? searchResults.map((p) => ({ value: p.productName, label: p.productName }))
+    : [];
+
+  const filteredId = idInput.length >= 3
+    ? searchResults.map((p) => ({ value: p.id, label: p.id }))
+    : [];
+
   const handleAddBtnClick = () => {
-    const selectedProduct = initialProducts.find(
-      (p) => p.serialNumber === indexInput && p.productName === productInput
+    const selectedProduct = products.find(
+      (p) => p.id === idInput && p.productName === productInput
     );
     if (!selectedProduct) {
       alert('Please select a valid product.');
@@ -118,7 +188,7 @@ const BillingPage = () => {
     const updatedRow = {
       customerName,
       mobileNumber,
-      serial: selectedProduct.serialNumber,
+      serial: selectedProduct.id,
       product: selectedProduct.productName,
       rate: selectedProduct.rate,
       quantity: Number(productQuantity),
@@ -133,7 +203,7 @@ const BillingPage = () => {
     }
     setEditingIndex(null);
     setProductInput('');
-    setIndexInput('');
+    setIdInput('');
     setProductQuantity('');
   };
 
@@ -143,7 +213,7 @@ const BillingPage = () => {
     setEditingIndex(idx);
     setCustomerName(row.customerName || '');
     setMobileNumber(row.mobileNumber || '');
-    setIndexInput(row.serial || '');
+    setIdInput(row.serial || '');
     setProductInput(row.product || '');
     setProductQuantity(String(row.quantity ?? ''));
   };
@@ -185,15 +255,17 @@ const BillingPage = () => {
             dropdownOptions={filteredProducts}
             dataType={'dropdown'}
             disabled={false}
+            onDropdownSelect={handleProductDropdownSelect}         // Autopopulate other field on select
           />
           <ShopInput
             elementType={'dropdown'}
-            labelText={'Product Index'}
-            value={indexInput}
-            onChange={handleIndexInputChange}
-            dropdownOptions={filteredIndex}
+            labelText={'Product Id'}
+            value={idInput}
+            onChange={handleIdInputChange}
+            dropdownOptions={filteredId}
             dataType={'dropdown'}
             disabled={false}
+            onDropdownSelect={handleIdDropdownSelect}            // Autopopulate other field on select
           />
           <ShopInput
             elementType={'quantity'}

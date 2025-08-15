@@ -5,9 +5,11 @@
     height: calc(100vh - 80px);
     width: calc(100% - 112px);
     overflow-y: auto;
-    overflow-x: hidden; // Prevent horizontal scrolling
+    overflow-x: hidden;
     transition: all 0.3s ease;
-    box-sizing: border-box; // Added to include padding in width calculation
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 
     &__title {
         color: #111;
@@ -24,8 +26,8 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
-        padding: 0 48px; // Reduced from 48px
-        box-sizing: border-box; // Added
+        padding: 0 48px;
+        box-sizing: border-box;
 
         > *:nth-child(odd) {
             justify-self: start;
@@ -35,88 +37,30 @@
             justify-self: end;
         }
 
-        .shopInput[dataType="dropdown"],
-        .shopInput[dataType="quantity"] {
-            grid-column: 1 / -1;
-            width: 100%;
-            justify-self: stretch;
-        }
-
         .shopInput[dataType="quantity"] {
             width: min(50%, 400px);
             justify-self: center;
         }
 
-        .shopInput__input {
-            border: 1px solid #ddd;
-            
-            &:hover, &:focus {
-                border-color: #ffc20f;
-                outline: none;
-            }
-
-            &:not(:focus) {
-                border-color: #ddd;
-            }
-        }
-
-        // Tablet (768px - 1024px)
-        @media (max-width: 1024px) {
-            gap: 16px;
-            padding: 0 16px;
-            
-            &__title {
-                height: 56px;
-                font-size: 28px;
-                margin-bottom: 40px;
-                padding: 0 16px;
-            }
-        }
-
-        // Small Tablet (600px - 768px)
-        @media (max-width: 768px) {
-            grid-template-columns: 1fr;
-            gap: 16px;
-            padding: 0 16px;
-
-            > *:nth-child(odd),
-            > *:nth-child(even) {
-                grid-column: 1;
-                justify-self: stretch;
-                margin: 0;
-                width: 100%;
-            }
-
-            .shopInput[dataType="quantity"] {
-                width: 100%;
-                max-width: 400px;
-            }
-
-            &__title {
-                height: 48px;
-                font-size: 24px;
-                margin-bottom: 32px;
-                padding: 0 16px;
-            }
-        }
-
-        // Mobile (< 600px)
-        @media (max-width: 600px) {
-            gap: 16px;
-            padding: 0 16px;
-
-            &__title {
-                height: 40px;
-                font-size: 20px;
-                margin-bottom: 24px;
-                padding: 0 16px;
-            }
+        .billingPage__actions {
+            display: flex;
+            gap: 12px;
+            justify-self: end;
         }
     }
 
     &__table {
         margin-top: 32px;
         padding: 0 48px;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+
+        .shop-table-container {
+            height: 100% !important;
+            max-height: none;
+            width: 100%;
+        }
     }
 
     &__summary {
@@ -144,6 +88,21 @@
         width: calc(100% - 80px);
         height: calc(100vh - 64px);
         margin-top: 64px;
+
+        &__form-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 0 16px;
+
+            > * {
+                justify-self: stretch;
+            }
+
+            .shopInput[dataType="quantity"] {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
     }
 
     @media (max-width: 600px) {

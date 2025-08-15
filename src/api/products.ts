@@ -86,7 +86,7 @@ export async function updateProductByIndex(
   index: string,
   payload: Partial<CreateProductRequest>
 ): Promise<CreatedProductResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/products/index/${encodeURIComponent(index)}`, {
+  const response = await fetch(`${API_BASE_URL}/api/products/${encodeURIComponent(index)}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -99,7 +99,7 @@ export async function updateProductByIndex(
 }
 
 export async function deleteProductByIndex(index: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/products/index/${encodeURIComponent(index)}`, {
+  const response = await fetch(`${API_BASE_URL}/api/products/${encodeURIComponent(index)}`, {
     method: 'DELETE',
   });
   if (!response.ok) {

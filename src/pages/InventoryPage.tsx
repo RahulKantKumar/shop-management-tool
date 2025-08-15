@@ -18,13 +18,14 @@ const InventoryPage = () => {
       try {
         const serverProducts = await getProducts();
         const mapped: Product[] = serverProducts.map((sp: ServerProduct) => ({
-          serialNumber: (sp as any).index ?? sp.serialNumber ?? '',
+          id: String(sp._id ?? sp.id ?? ''),
           productName: sp.name ?? '',
-          rate: typeof sp.inventoryRate === 'number' ? sp.inventoryRate : (typeof sp.price === 'number' ? sp.price : 0),
-          billingRate: typeof sp.billingRate === 'number' ? sp.billingRate : (typeof sp.price === 'number' ? sp.price : 0),
+          rate: typeof sp.inventoryRate === 'number' ? sp.inventoryRate : 0,
+          billingRate: typeof sp.billingRate === 'number' ? sp.billingRate : 0,
           quantity: typeof sp.stock === 'number' ? sp.stock : 0,
-          id: sp.id,
-        })).filter(p => p.serialNumber && p.productName);
+          category: sp.category ?? 'General',
+          isActive: sp.isActive ?? true,
+        })).filter(p => p.id && p.productName);
         setProducts(mapped);
       } catch (err) {
         console.error(err);
@@ -35,26 +36,26 @@ const InventoryPage = () => {
     void loadFromServer();
   }, []);
 
-  const [serialInput, setSerialInput] = useState('');
+  const [idInput, setIdInput] = useState('');
   const [productInput, setProductInput] = useState('');
   const [rateInput, setRateInput] = useState(''); // Inventory rate
   const [billingRateInput, setBillingRateInput] = useState('');
   const [quantityInput, setQuantityInput] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-	// Duplicate Index check (case-insensitive). While editing, ignore the current row.
-	const isIndexConflict = useMemo(() => {
-		const normalized = serialInput.trim().toLowerCase();
-		if (!normalized) return false;
-		return products.some((p, i) => {
-			const same = p.serialNumber.trim().toLowerCase() === normalized;
-			if (editingIndex === null) return same;
-			return same && i !== editingIndex;
-		});
-	}, [products, serialInput, editingIndex]);
+  // Duplicate Id check (case-insensitive). While editing, ignore the current row.
+  const isIdConflict = useMemo(() => {
+    const normalized = idInput.trim().toLowerCase();
+    if (!normalized) return false;
+    return products.some((p, i) => {
+      const same = p.id.trim().toLowerCase() === normalized;
+      if (editingIndex === null) return same;
+      return same && i !== editingIndex;
+    });
+  }, [products, idInput, editingIndex]);
 
   const tableColumns: ShopTableProps['tableColumns'] = [
-    { key: 'serial', header: 'INDEX', width: '10%', alignment: 'left' },
+    { key: 'serial', header: 'ID', width: '10%', alignment: 'left' },
     { key: 'product', header: 'PRODUCT', width: '40%', alignment: 'left' },
     { key: 'rate', header: 'INVENTORY RATE', width: '15%', alignment: 'right' },
     { key: 'billingRate', header: 'BILLING RATE', width: '15%', alignment: 'right' },
@@ -62,16 +63,16 @@ const InventoryPage = () => {
     { key: 'action', header: '', width: '05%', alignment: 'center' },
   ];
 
-  const serialOptions = useMemo(() => {
-    return serialInput
+  const idOptions = useMemo(() => {
+    return idInput
       ? products
           .filter((p) =>
-            p.serialNumber.toLowerCase().includes(serialInput.toLowerCase())
+            p.id.toLowerCase().includes(idInput.toLowerCase())
           )
-          .sort((a, b) => a.serialNumber.localeCompare(b.serialNumber))
-          .map((p) => ({ value: p.serialNumber, label: p.serialNumber }))
+          .sort((a, b) => a.id.localeCompare(b.id))
+          .map((p) => ({ value: p.id, label: p.id }))
       : [];
-  }, [products, serialInput]);
+  }, [products, idInput]);
 
   const productOptions = useMemo(() => {
     return productInput
@@ -84,11 +85,11 @@ const InventoryPage = () => {
       : [];
   }, [products, productInput]);
 
-  const handleSerialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSerialInput(value);
+    setIdInput(value);
     const found = products.find(
-      (p) => p.serialNumber.toLowerCase() === value.toLowerCase()
+      (p) => p.id.toLowerCase() === value.toLowerCase()
     );
     if (found) {
       setProductInput(found.productName);
@@ -96,7 +97,6 @@ const InventoryPage = () => {
       setBillingRateInput(String(found.billingRate));
       setQuantityInput('10');
     } else {
-      // Default quantity to 10 for new (unknown) items, without overwriting user-entered value
       setQuantityInput((prev) => (prev === '' ? '10' : prev));
     }
   };
@@ -108,18 +108,17 @@ const InventoryPage = () => {
       (p) => p.productName.toLowerCase() === value.toLowerCase()
     );
     if (found) {
-      setSerialInput(found.serialNumber);
+      setIdInput(found.id);
       setRateInput(String(found.rate));
       setBillingRateInput(String(found.billingRate));
       setQuantityInput('10');
     } else {
-      // Default quantity to 10 for new (unknown) items, without overwriting user-entered value
       setQuantityInput((prev) => (prev === '' ? '10' : prev));
     }
   };
 
   const resetForm = () => {
-    setSerialInput('');
+    setIdInput('');
     setProductInput('');
     setRateInput('');
     setQuantityInput('');
@@ -127,12 +126,12 @@ const InventoryPage = () => {
     setEditingIndex(null);
   };
 
-  const handleAddOrUpdate = async () => {
-    if (!serialInput || !productInput || !rateInput) {
-      alert('Please fill Index, Product and Rates.');
+  // Add product function
+  const handleAddProduct = async () => {
+    if (!idInput || !productInput || !rateInput) {
+      alert('Please fill Id, Product and Rates.');
       return;
     }
-
     const rate = Number(rateInput);
     const billingRate = Number(billingRateInput);
     const quantity = Number(quantityInput === '' ? '10' : quantityInput);
@@ -140,158 +139,124 @@ const InventoryPage = () => {
       alert('Rates and Quantity must be valid numbers.');
       return;
     }
-
-		// On add: prevent duplicate Index (serialNumber) values
-    if (editingIndex === null) {
-      const normalizedIndex = serialInput.trim();
-      if (
-				products.some(
-					(p) => p.serialNumber.trim().toLowerCase() === normalizedIndex.toLowerCase()
-				)
-      ) {
-        alert('A product with this Index already exists. Please choose a unique Index.');
-        return;
-      }
-      try {
-        const created = await createProduct({
-          index: normalizedIndex,
-          name: productInput,
-          description: `Serial: ${serialInput}`,
-          price: billingRate,
-          category: 'General',
-          stock: quantity,
-          inventoryRate: rate,
-          billingRate: billingRate,
-          isActive: true,
-        });
-        const newProduct: Product = {
-          serialNumber: normalizedIndex,
-          productName: productInput,
-          rate,
-          billingRate,
-          quantity,
-          id: created.id,
-        };
-        setProducts((prev) => [newProduct, ...prev]);
-        resetForm();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to create on server. No changes made.');
-      }
+    const normalizedId = idInput.trim();
+    if (
+      products.some(
+        (p) => p.id.trim().toLowerCase() === normalizedId.toLowerCase()
+      )
+    ) {
+      alert('A product with this Id already exists. Please choose a unique Id.');
       return;
     }
-
-		// Update; delete if quantity set to 0
-    if (editingIndex !== null) {
-      const existing = products[editingIndex];
-			// Prevent duplicate Index when changing Index during edit
-			const normalizedIndex = serialInput.trim().toLowerCase();
-			const conflict = products.some((p, i) => i !== editingIndex && p.serialNumber.trim().toLowerCase() === normalizedIndex);
-			if (conflict) {
-				alert('A product with this Index already exists. Please choose a unique Index.');
-				return;
-			}
-      if (quantity === 0) {
-        // Prefer delete by id, fallback to index; only update UI on success
-        let deleted = false;
-        if (existing?.id !== undefined) {
-          try {
-            await deleteProduct(existing.id);
-            deleted = true;
-          } catch (err) {
-            console.error(err);
-            // fallback to index-based
-            if (existing?.serialNumber) {
-              try {
-                await deleteProductByIndex(existing.serialNumber);
-                deleted = true;
-              } catch (e2) {
-                console.error(e2);
-              }
-            }
-            if (!deleted) alert('Failed to delete on server. No changes made.');
-          }
-        } else if (existing?.serialNumber) {
-          try {
-            await deleteProductByIndex(existing.serialNumber);
-            deleted = true;
-          } catch (err) {
-            console.error(err);
-            alert('Failed to delete on server. No changes made.');
-          }
-        } else {
-          alert('Cannot delete on server: missing identifiers.');
-        }
-        if (!deleted) return;
-        setProducts((prev) => prev.filter((_, idx) => idx !== editingIndex));
-        resetForm();
-        return;
-      }
-      // Prefer backend update by id; fallback to index; only show one error if both fail
-      let updated = false;
-      const payload = {
-        index: serialInput,
+    try {
+      const created = await createProduct({
+        _id: normalizedId,
         name: productInput,
-        description: `Serial: ${serialInput}`,
-        price: billingRate,
         category: 'General',
         stock: quantity,
         inventoryRate: rate,
         billingRate: billingRate,
         isActive: true,
-      } as const;
-
-      if (existing?.id !== undefined) {
-        try {
-          await updateProduct(existing.id, payload);
-          updated = true;
-        } catch (err) {
-          console.error(err);
-          if (existing?.serialNumber) {
-            try {
-              await updateProductByIndex(existing.serialNumber, payload);
-              updated = true;
-            } catch (err) {
-              console.error(err);
-            }
-          }
-        }
-      }
-
-      if (!updated) {
-        alert('Failed to update on server. No changes made.');
-        return;
-      }
-      if (!updated) return;
-      setProducts((prev) =>
-        prev.map((p, idx) =>
-          idx === editingIndex
-            ? {
-                serialNumber: serialInput,
-                productName: productInput,
-                rate,
-                billingRate,
-                quantity,
-                id: p.id,
-              }
-            : p
-        )
-      );
+      });
+      const newProduct: Product = {
+        id: normalizedId,
+        productName: productInput,
+        rate,
+        billingRate,
+        quantity,
+        category: 'General',
+        isActive: true,
+      };
+      setProducts((prev) => [newProduct, ...prev]);
       resetForm();
-      return;
+    } catch (err) {
+      console.error(err);
+      alert('Failed to create on server. No changes made.');
     }
   };
 
-  const handleEdit = (serialNumber: string) => {
-    const index = products.findIndex((p) => p.serialNumber === serialNumber);
-    if (index === -1) return;
-    const p = products[index];
-    setSerialInput(p.serialNumber);
+  // Update product function
+  const handleUpdateProduct = async () => {
+    if (!idInput || !productInput || !rateInput) {
+      alert('Please fill Id, Product and Rates.');
+      return;
+    }
+    const rate = Number(rateInput);
+    const billingRate = Number(billingRateInput);
+    const quantity = Number(quantityInput === '' ? '10' : quantityInput);
+    if (Number.isNaN(rate) || Number.isNaN(billingRate) || Number.isNaN(quantity)) {
+      alert('Rates and Quantity must be valid numbers.');
+      return;
+    }
+    const existing = products[editingIndex!];
+    const normalizedId = idInput.trim().toLowerCase();
+    const conflict = products.some((p, i) => i !== editingIndex && p.id.trim().toLowerCase() === normalizedId);
+    if (conflict) {
+      alert('A product with this Id already exists. Please choose a unique Id.');
+      return;
+    }
+    if (quantity === 0) {
+      if (existing?.id) {
+        try {
+          await deleteProductByIndex(String(existing.id));
+          setProducts((prev) => prev.filter((_, idx) => idx !== editingIndex));
+          resetForm();
+        } catch (err) {
+          console.error(err);
+          alert('Failed to delete on server. No changes made.');
+        }
+      } else {
+        alert('Cannot delete on server: missing id.');
+      }
+      return;
+    }
+    const payload = {
+      _id: idInput,
+      name: productInput,
+      category: 'General',
+      stock: quantity,
+      inventoryRate: rate,
+      billingRate: billingRate,
+      isActive: true,
+    } as const;
+    if (existing?.id) {
+      try {
+        await updateProductByIndex(String(existing.id), payload);
+        setProducts((prev) =>
+          prev.map((p, idx) =>
+            idx === editingIndex
+              ? {
+                  id: idInput,
+                  productName: productInput,
+                  rate,
+                  billingRate,
+                  quantity,
+                  category: 'General',
+                  isActive: true,
+                }
+              : p
+          )
+        );
+        resetForm();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to update on server. No changes made.');
+      }
+    } else {
+      alert('Cannot update on server: missing id.');
+    }
+  };
+
+  const handleEdit = (id: string) => {
+    const idx = products.findIndex((p) => p.id === id);
+    if (idx === -1) return;
+    const p = products[idx];
+    setIdInput(String(p.id));
     setProductInput(p.productName);
     setRateInput(String(p.rate));
     setBillingRateInput(String(p.billingRate));
     setQuantityInput(String(p.quantity));
-    setEditingIndex(index);
+    setEditingIndex(idx);
   };
 
   const handleDelete = async (index: number) => {
@@ -299,37 +264,19 @@ const InventoryPage = () => {
     if (!confirmed) return;
     const p = products[index];
     if (!p) return;
-    let deleted = false;
-    if (p.serialNumber) {
+    if (p.id) {
       try {
-        await deleteProductByIndex(p.serialNumber);
-        deleted = true;
-      } catch (err) {
-        console.error(err);
-        if (p.id !== undefined) {
-          try {
-            await deleteProduct(p.id);
-            deleted = true;
-          } catch (e2) {
-            console.error(e2);
-          }
+        await deleteProductByIndex(String(p.id));
+        setProducts((prev) => prev.filter((_, idx) => idx !== index));
+        if (editingIndex === index) {
+          resetForm();
         }
-      }
-    } else if (p.id !== undefined) {
-      try {
-        await deleteProduct(p.id);
-        deleted = true;
       } catch (err) {
         console.error(err);
+        alert('Failed to delete on server. No changes made.');
       }
-    }
-    if (!deleted) {
-      alert('Failed to delete on server. No changes made.');
-      return;
-    }
-    setProducts((prev) => prev.filter((_, idx) => idx !== index));
-    if (editingIndex === index) {
-      resetForm();
+    } else {
+      alert('Cannot delete on server: missing id.');
     }
   };
 
@@ -341,12 +288,12 @@ const InventoryPage = () => {
 
   const tableData = useMemo(() => {
     return sortedProducts.map((p) => ({
-      serial: p.serialNumber,
+      serial: p.id,
       product: p.productName,
       rate: p.rate,
       billingRate: p.billingRate,
       quantity: p.quantity,
-      action: <EditButton onClick={() => handleEdit(p.serialNumber)} />,
+      action: <EditButton onClick={() => handleEdit(String(p.id))} />,
     }));
   }, [sortedProducts]);
 
@@ -359,14 +306,13 @@ const InventoryPage = () => {
         <div className='inventoryPage__form-grid'>
           <ShopInput
             elementType={'dropdown'}
-            labelText={'Product Index'}
-            value={serialInput}
-            onChange={handleSerialChange}
-            dropdownOptions={serialOptions}
+            labelText={'Product Id'}
+            value={idInput}
+            onChange={handleIdChange}
+            dropdownOptions={idOptions}
             dataType={'dropdown'}
             disabled={false}
-            // Show inline duplicate warning by leveraging placeholder color
-            placeholder={isIndexConflict ? 'Index already exists' : ''}
+            placeholder={isIdConflict ? 'Id already exists' : ''}
           />
           <ShopInput
             elementType={'dropdown'}
@@ -402,7 +348,13 @@ const InventoryPage = () => {
             <ShopButton
               text={editingIndex === null ? 'Add' : 'Update'}
               disabled={false}
-              onClick={() => { void handleAddOrUpdate(); }}
+              onClick={() => {
+                if (editingIndex === null) {
+                  void handleAddProduct();
+                } else {
+                  void handleUpdateProduct();
+                }
+              }}
             />
           </div>
         </div>
